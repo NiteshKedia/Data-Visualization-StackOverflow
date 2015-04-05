@@ -15,6 +15,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+
 public class ExtractUsersInfo {
 
 	private static int count = 0;
@@ -82,7 +83,7 @@ public class ExtractUsersInfo {
 	}
 	
 	static private HashMap<String, String> getCachedCountries() {
-		HashMap<String, String> map = new HashMap<>();
+		HashMap<String, String> map = new HashMap<String, String>();
 		try {
 			BufferedReader br = new BufferedReader(new FileReader("../data/cachedCountries.txt"));
 			String line = "";
