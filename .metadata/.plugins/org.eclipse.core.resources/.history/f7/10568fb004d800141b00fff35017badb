@@ -1,0 +1,25 @@
+package megaminds_final_project;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+public class ExtractUsersInfo {
+
+	private static String filepath = "../data/users_test.xml";
+	public static void main(String[] args) throws IOException {
+		// TODO Auto-generated method stub
+		
+		BufferedReader br = new BufferedReader(new FileReader(filepath));
+		String line = null;
+		while ((line = br.readLine()) != null) {
+			String[] pairs = line.split(" ");
+			if(pairs.length > 3) {
+				String userId = pairs[1].substring(4, pairs[1].length()-1);
+				System.out.println(userId);
+			}
+		}
+		br.close();
+	}
+
+}

@@ -1,0 +1,84 @@
+package megaminds_final_project;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.net.URL;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+public class ExtractUsersInfo {
+
+	private static String filepath = "../data/users.xml";
+	public static void main(String[] args) throws Exception {
+		// TODO Auto-generated method stub
+		
+		BufferedReader br = new BufferedReader(new FileReader(filepath));
+		PrintWriter writer = new PrintWriter("../data/extractedUser.txt");
+		String line = null;
+		while ((line = br.readLine()) != null) {
+			String[] pairs = line.split(" ");
+			if(pairs.length > 4) {
+				String userId = pairs[3].substring(4, pairs[3].length()-1);
+				int locationStartIndex = line.indexOf("Location=");
+				int locationEndIndex = line.indexOf('"', locationStartIndex+10);
+				String userLocation = line.substring(locationStartIndex+10, locationEndIndex);
+				String userCreationDate = pairs[5].substring(14, pairs[5].length()-1);
+				//Date date = new Date();
+				//System.out.println(userCreationDate);
+				if(userLocation.equals("=")) {
+					userLocation = "NO_LOCATION";
+				}
+				else {
+					userLocation = getLocation(userLocation);
+				}
+				writer.println(userId + ";" + userLocation + ";" + userCreationDate);
+			}
+		}
+		writer.flush();
+		br.close();
+		writer.close();
+	}
+	
+	static public String getLocation(String location) throws IOException, Exception {
+		String httpReq = "https://maps.googleapis.com/maps/api/geocode/json?address=";
+		URL  url = new URL(httpReq + location);
+		InputStream input = null;
+		try {
+			input = url.openStream();
+		}
+		catch(Exception  e) {
+			System.out.println(e.toString());
+		}
+		BufferedReader br = new BufferedReader(new InputStreamReader(input));
+		String jsonText = readAll(br);
+		JSONParser parser = new JSONParser(); // parser object
+		JSONObject json = (JSONObject) parser.parse(jsonText);
+		
+		String ret = "NO_LOCATION";
+		String status = (String)json.get("statusCode");
+		if(status.equals("OK")) {
+			JSONArray resultsArray = (JSONArray)json.get("results");
+			JSONObject addressJson = (JSONObject)resultsArray.get(0);
+			JSONArray addressArray = (JSONArray)addressJson.get("address_components");
+			JSONObject lastJson = (JSONObject)addressArray.get(addressArray.size() - 1);
+			ret = (String)lastJson.get("long_name");
+		}
+		return null;
+	}
+	
+	private static String readAll(Reader rd) throws IOException {
+		StringBuilder sb = new StringBuilder();
+		int cp;
+		while ((cp = rd.read()) != -1) {
+			sb.append((char) cp);
+		}
+		return sb.toString();
+	}
+}

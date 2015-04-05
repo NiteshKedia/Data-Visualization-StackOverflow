@@ -1,0 +1,62 @@
+package megaminds_final_project;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Date;
+
+public class ExtractUsersInfo {
+
+	private static String filepath = "../data/users.xml";
+	public static void main(String[] args) throws IOException {
+		// TODO Auto-generated method stub
+		
+		BufferedReader br = new BufferedReader(new FileReader(filepath));
+		PrintWriter writer = new PrintWriter("../data/extractedUser.txt");
+		String line = null;
+		while ((line = br.readLine()) != null) {
+			String[] pairs = line.split(" ");
+			if(pairs.length > 4) {
+				String userId = pairs[3].substring(4, pairs[3].length()-1);
+				int locationStartIndex = line.indexOf("Location=");
+				int locationEndIndex = line.indexOf('"', locationStartIndex+10);
+				String userLocation = line.substring(locationStartIndex+10, locationEndIndex);
+				String userCreationDate = pairs[5].substring(14, pairs[5].length()-1);
+				//Date date = new Date();
+				//System.out.println(userCreationDate);
+				if(userLocation.equals("=")) {
+					userLocation = "NO_LOCATION";
+				}
+				writer.println(userId + ";" + userLocation + ";" + userCreationDate);
+			}
+		}
+		writer.flush();
+		br.close();
+		writer.close();
+	}
+	
+	static public String getLocation(String location) throws IOException {
+		String httpReq = "https://maps.googleapis.com/maps/api/geocode/json?address=";
+		URL  url = new URL(httpReq + location);
+		InputStream input = url.openStream();
+		BufferedReader br = new BufferedReader(new InputStreamReader(input));
+		String jsonText = readAll(br);
+		return null;
+	}
+	
+	private static String readAll(Reader rd) throws IOException {
+		StringBuilder sb = new StringBuilder();
+		int cp;
+		while ((cp = rd.read()) != -1) {
+			sb.append((char) cp);
+		}
+		return sb.toString();
+	}
+}

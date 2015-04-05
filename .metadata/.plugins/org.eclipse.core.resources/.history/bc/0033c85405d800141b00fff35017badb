@@ -1,0 +1,28 @@
+package megaminds_final_project;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+public class ExtractUsersInfo {
+
+	private static String filepath = "../data/users_test.xml";
+	public static void main(String[] args) throws IOException {
+		// TODO Auto-generated method stub
+		
+		BufferedReader br = new BufferedReader(new FileReader(filepath));
+		String line = null;
+		while ((line = br.readLine()) != null) {
+			String[] pairs = line.split(" ");
+			if(pairs.length > 4) {
+				String userId = pairs[3].substring(4, pairs[3].length()-1);
+				int locationStartIndex = line.indexOf("Location=");
+				int locationEndIndex = line.indexOf('"', locationStartIndex+10);
+				String userLocation = line.substring(locationStartIndex+10, locationEndIndex)
+				System.out.println(userLocation);
+			}
+		}
+		br.close();
+	}
+
+}
