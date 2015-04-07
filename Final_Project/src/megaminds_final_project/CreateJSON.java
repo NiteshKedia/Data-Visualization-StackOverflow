@@ -83,5 +83,11 @@ public class CreateJSON {
 			//System.out.println("HI");
 		}
 	}
+	
+class FilteredData{
+	int numUsers;
+	int numPosts;
+	
+}
 
 }
