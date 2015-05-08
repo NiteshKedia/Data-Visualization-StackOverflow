@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery.ui.labeledslider.css">
+
+    <script src="js/jquery.js"></script>
+    <script src="js/jquery.ui.js"></script>
+    <script src="js/jquery.ui.labeledslider.js"></script>
+    
+    <script src="js/d3.v3.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/d3.layout.cloud.js"></script>
+    <script src="js/d3pie.min.js"></script>
+    <script src="js/jsonsql-0.1.js"></script>
+    <script src="js/lodash.min.js"></script>
+    <script src="js/JSLINQ.js"></script>
+    <script src="data/popularity.js"></script>
+    <script src="data/correlation.js"></script>
+    <script src="js/defiant-latest.min.js"></script>
+
+    <script type="text/javascript" src="js/jquery.mockjax.js"></script>
+    <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
+    <script type="text/javascript" src="js/tags.js"></script>
+    <script type="text/javascript" src="js/demo.js"></script>
+	
+	<script type="text/javascript" src="data/KI/Q1.js"></script>
+	<script type="text/javascript" src="data/KI/Q2.js"></script>
+	<script type="text/javascript" src="data/KI/Q3.js"></script>
+	<script type="text/javascript" src="data/KI/Q4.js"></script>
+	<script type="text/javascript" src="data/KI/Q5.js"></script>
+	<script type="text/javascript" src="data/KI/Q6.js"></script>
+	<script type="text/javascript" src="data/KI/Q7.js"></script>
+	<script type="text/javascript" src="data/KI/Q8.js"></script>
+	<script type="text/javascript" src="data/KI/Q9.js"></script>
+	<script type="text/javascript" src="data/KI/Q10.js"></script>
+	<script type="text/javascript" src="data/KI/Q11.js"></script>
+	<script type="text/javascript" src="data/KI/Q12.js"></script>
+	<script type="text/javascript" src="data/KI/Q13.js"></script>
+	<script type="text/javascript" src="data/KI/Q14.js"></script>
+	<script type="text/javascript" src="data/KI/Q15.js"></script>
+	<script type="text/javascript" src="data/KI/Q16.js"></script>
+	<script type="text/javascript" src="js/ammap.js"></script>
+	<script type="text/javascript" src="http://www.amcharts.com/lib/3/maps/js/worldLow.js"></script>
+	<script type="text/javascript" src="js/dark.js"></script>
+	<script type="text/javascript" src="js/map.js"></script>
+
+</head>
+<body>
+     <nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+        <img src="stack.png" style="width: 50px;height: 50px;float:left">
+      
+        
+      <a class="navbar-brand" href="http://stackoverflow.com/" target="_blank" style="padding-left: 40px;">Data Analytics: Stack Overflow</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li ><a href="DataViz_StackOverflow.pdf" target="_blank">Documentation</a></li>
+        <li><a href="https://prezi.com/ptf_1hbk0hml/visual-analytics-stackoverflow/?utm_campaign=share&utm_medium=copy" target="_blank">Presentation</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Team Members <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="https://www.linkedin.com/in/kedianitesh" target="_blank" >Nitesh Kedia</a></li>
+            <li class="divider"></li>
+            <li><a href="https://www.linkedin.com/in/nishantbansal7/" target="_blank">Nishant Bansal</a></li>
+            <li class="divider"></li>
+            <li><a href="https://www.linkedin.com/in/prernasatija/" target="_blank">Prerna Satija</a></li>
+            <!-- <li class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+            <li class="divider"></li>
+            <li><a href="#">One more separated link</a></li> -->
+          </ul>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+      <!-- <form class="navbar-form navbar-right" role="search"> -->
+        <!-- <div class="form-group"> -->
+         <li> <input type="text"  id="autocomplete-ajax" class="form-control" placeholder="Search Tag" id="autocomplete" style="margin-top: 10px;"></li>
+        <!-- </div> -->
+       <li> <button class="btn btn-default" onclick="visualizeCorrelation(selectedword, quarter)" style="margin-top: 10px;margin-left: 10px;" data-toggle="modal" data-target="#myModalcorrelation">Submit</button></li>
+      <!-- </form> -->
+      </ul>      
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+    <!-- Modal -->
+    <div class="modal fade bs-example-modal-lg" id="myModalcorrelation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn btn-default" id="myModaltitleCorrelation"></button>
+                    <button type="button" class="btn btn-default" id="myModaltitleKI"></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel"></h4>
+                </div>
+                <div class="modal-header" id="second">
+                </div>
+                <div class="modal-body">
+                    <div id="correlationbody" style="margin-left: 120px;margin-top: 20px;">
+                        ...
+                    </div>
+                    <div id="mapbody">
+                    </div>
+                </div>
+                <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div> -->
+            </div>
+        </div>
+    </div>
+
+    <div id = "bottom" style="width:1200px;margin-top:50px;">
+    <div id = "slider" style="margin-left:160px;"></div>
+    <div class="wrapper" id="sliderdiv">
+
+        <button type="button" id="button_play" class="btn btn-success" onclick="buttonPlayPress()">
+            <i class="fa fa-play"></i>
+        </button>
+
+        <button type="button" id="button_stop" class="btn" onclick="buttonStopPress()">
+            <i class="fa fa-stop"></i>
+        </button>
+
+        Time Range: <span class="slider-time">Jul 2008 - Jul 2012</span>
+        <div class="slider1"></div>
+        <br>
+        <br>
+
+    </div>
+    <br/>
+
+    <div id="wordcloud" style="width: 1200px;float:left;padding-top: 80px;"></div>
+</div>
+    <!-- <div id="mapbody1"></div> -->
+    <!-- 
+    <div id="correlation" style="width: 30%; float:right"></div> -->
+    <!--button onclick="updateWordCloud(myWordCloud)">Update</button-->
+
+
+
+
+    <script>
+		var tabSelected = 1;
+        var state = 'stop';
+        var sliderinterval;
+        var stateval = 0;
+        var quarter = 16;
+        var selectedword;
+
+        $('#autocomplete').autocomplete({
+    serviceUrl: '/autocomplete/countries',
+    onSelect: function (suggestion) {
+        alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
+    }
+});
+
+        $('#slider').append($('#sliderdiv'));
+        
+        var quarters = [{
+            "name": "Jul 2008 - Sep 2008",
+            "value": "Q1"
+        }, {
+            "name": "Jul 2008 - Dec 2008",
+            "value": "Q2"
+        }, {
+            "name": "Jul 2008 - Mar 2009",
+            "value": "Q3"
+        }, {
+            "name": "Jul 2008 - Jun 2009",
+            "value": "Q4"
+        }, {
+            "name": "Jul 2008 - Sep 2009",
+            "value": "Q5"
+        }, {
+            "name": "Jul 2008 - Dec 2009",
+            "value": "Q6"
+        }, {
+            "name": "Jul 2008 - Mar 2010",
+            "value": "Q7"
+        }, {
+            "name": "Jul 2008 - Jun 2010",
+            "value": "Q8"
+        }, {
+            "name": "Jul 2008 - Sep 2010",
+            "value": "Q9"
+        }, {
+            "name": "Jul 2008 - Dec 2010",
+            "value": "Q10"
+        }, {
+            "name": "Jul 2008 - Mar 2011",
+            "value": "Q11"
+        }, {
+            "name": "Jul 2008 - Jun 2011",
+            "value": "Q12"
+        }, {
+            "name": "Jul 2008 - Sep 2011",
+            "value": "Q13"
+        }, {
+            "name": "Jul 2008 - Dec 2011",
+            "value": "Q14"
+        }, {
+            "name": "Jul 2008 - Mar 2012",
+            "value": "Q15"
+        }, {
+            "name": "Jul 2008 - Jun 2012",
+            "value": "Q16"
+        }, {
+            "name": "Jul 2008 - Aug 2012",
+            "value": "Q17"
+        }];
+ 
+
+        $(function() {
+            $('.slider1').labeledslider({
+                max: 16,
+                animate: true,
+                tickLabels: {
+                    0: 'Q16',
+                    1: 'Q1',
+                    2: 'Q2',
+                    3: 'Q3',
+                    4: 'Q4',
+                    5: 'Q5',
+                    6: 'Q6',
+                    7: 'Q7',
+                    8: 'Q8',
+                    9: 'Q9',
+                    10: 'Q10',
+                    11: 'Q11',
+                    12: 'Q12',
+                    13: 'Q13',
+                    14: 'Q14',
+                    15: 'Q15',
+                    16: 'Q16',
+
+                },
+
+                slide: function(e, ui) {
+
+
+                    quarter = Math.floor(ui.value);
+                    stateval = quarter;
+                    //console.log(quarter);
+                    //console.log(quarters[quarter-1].name);
+
+                    updateWordCloud(quarter);
+
+                }
+            });
+        });
+
+        function buttonPlayPress() {
+            //console.log(stateval);
+            if (state == 'stop') {
+                state = 'play';
+                var button = d3.select("#button_play").classed('btn-success', true);
+                button.select("i").attr('class', "fa fa-pause");
+                sliderinterval = setInterval(function() {
+                    stateval = (stateval + 1) % 17; // SET { 1-360 }
+                    quarter=stateval;
+                    console.log(stateval);
+                    if(stateval == 0){
+                        quarter=16;
+                        clearInterval(sliderinterval);
+                    }
+                    $('.slider1').labeledslider("value", stateval);
+                    updateWordCloud(stateval);
+                }, 1000);
+            } else if (state == 'play' || state == 'resume') {
+                state = 'pause';
+                d3.select("#button_play i").attr('class', "fa fa-play");
+                clearInterval(sliderinterval);
+            } else if (state == 'pause') {
+                state = 'resume';
+                sliderinterval = setInterval(function() {
+                    stateval = (stateval + 1) % 17; // SET { 1-360 }
+                    quarter=stateval;
+                    console.log(stateval);
+                    if(stateval == 0){
+                        quarter=16;
+                        clearInterval(sliderinterval);
+                    }
+                    $('.slider1').labeledslider("value", stateval);
+                    updateWordCloud(stateval);
+                }, 1000);
+
+                d3.select("#button_play i").attr('class', "fa fa-pause");
+            }
+            //console.log("button play pressed, play was " + state);
+        }
+
+        function buttonStopPress() {
+            state = 'stop';
+            stateval = 0;
+            quarter=16;
+            updateWordCloud(stateval);
+            clearInterval(sliderinterval);
+            $('.slider1').labeledslider("value", 0);
+
+            var button = d3.select("#button_play").classed('btn-success', false);
+            button.select("i").attr('class', "fa fa-play");
+            //console.log("button stop invoked.");
+        }
+        //Simple animated example of d3-cloud - https://github.com/jasondavies/d3-cloud
+        //Based on https://github.com/jasondavies/d3-cloud/blob/master/examples/simple.html
+
+        // Encapsulate the word cloud functionality
+
+        var wordScale = d3.scale.linear().domain([0, 1]).range([11, 380]);
+
+        var test = JSON.parse(JSON.stringify(popularity['Q16']))
+        var myWordCloud = wordCloud('#wordcloud', test);
+
+        function wordCloud(selector, words) {
+
+                var fill = d3.scale.category10();
+                var cloud;
+                //Construct the word cloud's SVG element
+                var svg = d3.select(selector).append("svg")
+                    .attr("width", 1200)
+                    .attr("height", 400)
+                    .call(d3.behavior.zoom().scaleExtent([1, 8]).on("zoom", redraw).translate([600, 200]))
+                    .append("g")
+                    .attr("transform", "translate(600,200)");
+
+
+
+                d3.layout.cloud().size([1200, 400])
+                    .words(words)
+                    .padding(1)
+                    .rotate(0)
+                    .font("Lucida Grande")
+                    .fontSize(function(d) {
+                        return wordScale(d.size);
+                    })
+                    .on("end", draw)
+                    .start();
+
+                cloud.enter()
+                    .append("text")
+                    .style("font-family", "Lucida Grande")
+                    .style("fill", function(d, i) {
+                        return fill(i);
+                    })
+                    .attr("text-anchor", "middle")
+                    .attr('font-size', 1)
+                    .attr('data-toggle', "modal")
+                    .attr('data-target', "#myModalcorrelation")
+                    .text(function(d) {
+                        return d.text;
+                    })
+                    .on("click", function(d) {
+                        selectedword = d.text;
+                        visualizeCorrelation(d.text, quarter)
+                    })
+
+                cloud
+                    .transition()
+                    .duration(600)
+                    .style("font-size", function(d) {
+                        return d.size + "px";
+                    })
+                    .attr("transform", function(d) {
+                        return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                    })
+                    .style("fill-opacity", 1);
+
+                //Exiting words
+                cloud.exit()
+                    .transition()
+                    .duration(200)
+                    .style('fill-opacity', 1e-6)
+                    .attr('font-size', 1)
+                    .remove();
+
+
+
+                function redraw() {
+                    // svg.attr("transform", "translate(" + [d.x, d.y] + ")");
+                    svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+
+                }
+
+                //Draw the word cloud
+                function draw(words) {
+                    cloud = svg.selectAll("g text")
+                        .data(words, function(d) {
+                            return d.text;
+                        })
+                        .style("font-size", function(d, i) {
+                            return d.size + "px";
+                        });
+
+
+
+
+                }
+
+
+                //Use the module pattern to encapsulate the visualisation code. We'll
+                // expose only the parts that need to be public.
+                return {
+
+                    //Recompute the word cloud for a new set of words. This method will
+                    // asycnhronously call draw when the layout has been computed.
+                    //The outside world will need to call this function, so make it part
+                    // of the wordCloud return value.
+                    update: function(words) {
+                        d3.layout.cloud().size([1200, 400])
+                            .words(words)
+                            .padding(1)
+                            .rotate(0)
+                            .font("Lucida Grande")
+                            .fontSize(function(d) {
+                                return wordScale(d.size);
+                            })
+                            .on("end", draw)
+                            .start();
+
+                        visualizeCorrelation(selectedword, quarter);
+                        console.log(quarter);
+                    }
+                }
+
+            }
+            //Prepare one of the sample sentences by removing punctuation,
+            // creating an array of words and computing a random size attribute.
+        function getWords(i) {
+            return words[i]
+                .replace(/[!\.,:;\?]/g, '')
+                .split(' ')
+                .map(function(d) {
+                    return {
+                        text: d,
+                        size: 10 + Math.random() * 60
+                    };
+                })
+        }
+
+        //This method tells the word cloud to redraw with a new set of words.
+        //In reality the new words would probably come from a server request,
+        // user input or some other source.
+
+        function updateWordCloud(quarter) {
+            //document.getElementById("demo").innerHTML = "Hello World";
+            if (quarter == 0) {
+                $('.slider-time').html('Jul 2008 - Jul 2012');
+                var test1 = popularity[quarters[16].value];
+                var test = JSON.parse(JSON.stringify(test1));
+                myWordCloud.update(test);
+            } else {
+                $('.slider-time').html(quarters[quarter - 1].name);
+                var test1 = popularity[quarters[quarter - 1].value];
+                var test = JSON.parse(JSON.stringify(test1));
+                myWordCloud.update(test);
+            }
+            
+
+        }
+
+
+        //************************************************* CORRELATION ********************************************************************************
+        var correlationdata = [{
+            label: "linq",
+            value: 6060
+        }];
+
+
+        var pie = new d3pie("correlationbody", {
+            "header": {
+                "title": {
+                    "text": " ",
+                    "fontSize": 24,
+                    "font": "open sans"
+                },
+                "subtitle": {
+                    "color": "#999999",
+                    "fontSize": 12,
+                    "font": "open sans"
+                },
+                "location": "top-center",
+                "titleSubtitlePadding": 0
+            },
+            "footer": {
+                "color": "#4f3f3f",
+                "fontSize": 30,
+                "font": "lucida sans",
+                "location": "bottom-center"
+            },
+            "size": {
+                "canvasWidth": 550,
+                "pieInnerRadius": "36%",
+                "pieOuterRadius": "79%"
+            },
+            "data": {
+                "sortOrder": "value-desc",
+                "content": correlationdata
+            },
+            "labels": {
+                "outer": {
+                    "pieDistance": 50
+                },
+                "inner": {
+                    "hideWhenLessThanPercentage": 3
+                },
+                "mainLabel": {
+                    "fontSize": 13
+                },
+                "percentage": {
+                    "color": "#ffffff",
+                    "decimalPlaces": 0
+                },
+                "value": {
+                    "color": "#adadad",
+                    "fontSize": 11
+                },
+                "lines": {
+                    "enabled": true
+                }
+            },
+            "effects": {
+                "load": {
+                    "speed": 160
+                },
+                "pullOutSegmentOnClick": {
+                    "effect": "linear",
+                    "speed": 400,
+                    "size": 8
+                }
+            },
+            "misc": {
+                "gradient": {
+                    "enabled": true,
+                    "percentage": 100
+                }
+            },
+            callbacks: {
+                onClickSegment: function(a) {
+                    //alert("Segment clicked! See the console for all data passed to the click handler.");
+                    //console.log(a.data.label);
+                    selectedword = a.data.label;
+                    visualizeCorrelation(a.data.label, quarter)
+                }
+            }
+
+        });
+
+
+    $('#myModalcorrelation').on('hidden.bs.modal', function () {
+    // do something…
+    $('#slider').append($('#sliderdiv'));
+})
+
+      $('#myModalcorrelation').on('show.bs.modal', function () {
+    // do something…
+    $('#second').append($('#sliderdiv'));
+})
+
+        function visualizeCorrelation(word, quarter) {
+            // alert(word);
+            if(tabSelected == 1) {
+				$('#mapbody').hide();
+				$('#correlationbody').show();
+			}
+			else {
+				$('#mapbody').show();
+				$('#correlationbody').hide();
+			}
+            var correlationdata = [];
+            // pie.updateProp("data.content", correlationdata);
+            var b = JSLINQ(correlation)
+                .Where(function(item) {
+                    return item.quarter == quarter
+                }).items;
+
+            var correlationdata = JSLINQ(b)
+                .Where(function(item) {
+                    return item.tag == word
+                }).items;
+
+            var subsets = _.map(correlationdata, function(elm) {
+                return _.pick(elm, 'label', 'value');
+            });
+
+            var title1 = "Correlation For : " + word;
+            var title2 = "Knowledge Index : " + word;
+
+            $('#myModaltitleCorrelation').html(title1);
+            $('#myModaltitleKI').html(title2);
+            pie.updateProp("data.content", subsets);
+			createKiMap(quarter, word);
+            //pie.updateProp("footer.text", title);
+
+        }
+
+        $("#myModaltitleKI").click(function() {
+			tabSelected = 2;
+            $('#correlationbody').hide();
+            $('#mapbody').show();
+        });
+
+        $("#myModaltitleCorrelation").click(function() {
+			tabSelected = 1;
+            $('#mapbody').hide();
+            $('#correlationbody').show();
+        });
+    </script>
+</body>
+
+</html>

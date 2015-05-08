@@ -1,0 +1,10 @@
+% notags = {'1,','2,','3,','4,','5,','6,','7,','8,','9,','10,','11,','12,','13,','14,','15,','16,','17,'};
+% emptytagindex = find(ismember(poststags,notags));
+% poststags(emptytagindex) = [];
+% maptags = containers.Map(tags,[1:30672]);
+
+index  = find(ismember(tags,'servlets'));
+[xsorted is] = sort(correlationForQuarter7(index,:),'descend');
+xsorted=full(xsorted);
+tags(is(1:10))
+

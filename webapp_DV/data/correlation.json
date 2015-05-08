@@ -1,0 +1,48 @@
+correlation = {
+	"java": {
+		"Q1": {
+			"name":"java",
+			"children":[
+				{"name":"javascript", "value":0.54},
+				{"name":"jsp", "value":0.23},
+				{"name":"servelets", "value":0.12},
+				{"name":"object-oriented", "value":0.10},
+				{"name":"javascript", "value":0.54},
+				{"name":"jsp", "value":0.23},
+				{"name":"servelets", "value":0.12},
+				{"name":"object-oriented", "value":0.10}
+			]
+		},
+		"Q2": {
+			"name":"java",
+			"value":1,
+			"children":[
+				{"name":"javascript", "value":0.54},
+				{"name":"jsp", "value":0.18},
+				{"name":"servelets", "value":0.20},
+				{"name":"object-oriented", "value":0.10}
+			]
+		}
+	},
+	"javascript": {
+		"Q1": {
+			"name":"javascript",
+			"value":1,
+			"children":[
+				{"name":"java", "value":0.54},
+				{"name":"jsp", "value":0.12},
+				{"name":"servelets", "value":0.04}
+			]
+		},
+		"Q2": {
+			"name":"javascript",
+			"value":1,
+			"children":[
+				{"name":"java", "value":0.54},
+				{"name":"jsp", "value":0.18},
+				{"name":"servelets", "value":0.20},
+				
+			]
+		}
+	}
+}
